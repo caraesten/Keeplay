@@ -1,0 +1,97 @@
+<html>
+
+<head>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="{{ media_url }}css/game.css" />
+<script type="text/javascript" src="{{ media_url }}js/libs/audiolib.min.js"></script>
+<script type="text/javascript" src="{{ media_url }}js/libs/jquery.simplemodal.1.4.1.min.js"></script>
+<script type="text/javascript" src="{{ media_url }}js/audio_gen.js"> </script>
+<script type="text/javascript" src="{{ media_url }}js/falling_block.js"> </script>
+<script type="text/javascript" src="{{ media_url }}js/player.js"> </script>
+<script type="text/javascript" src="{{ media_url }}js/game_engine.js"> </script>
+
+<script type="text/javascript">
+/*
+	Icon set from: http://somerandomdude.com/work/iconic/
+
+*/
+
+
+
+$(document).ready(function(){
+	/*
+	var accomp = [
+		{
+			'freq':440,
+			'dur': (1/4)
+		},
+		{
+			'freq': 850,
+			'dur': (1/2)
+		},
+		{
+			'freq':440,
+			'dur': (1/4)
+		},
+		{
+			'freq':850,
+			'dur': (1/2)
+		},
+		{
+			'freq':440,
+			'dur': (1/4)
+		},
+		{
+			'freq': 850,
+			'dur': (1/2)
+		},
+		{
+			'freq':440,
+			'dur': (1/4)
+		},
+		{
+			'freq':850,
+			'dur': (1/2)
+		},
+		{
+			'freq':440,
+			'dur': (1/4)
+		},
+		{
+			'freq':850,
+			'dur': (1/2)
+		},
+		{
+			'freq':440,
+			'dur': (1/4)
+		},
+		{
+			'freq':850,
+			'dur': (1/2)
+		}
+	]; */
+	var accomp = [];
+	var sound = soundGame({'VCOs': 2, 'sampleRate': 44100, 'accomp':accomp });
+	sound.play();
+	var game = gameEngine({'canvas': document.getElementById('canvas'), 'audio': sound, 'media': '{{media_url}}' });
+	game.init();
+});
+
+</script>
+
+</head>
+<body>
+<div id="maindiv">
+<canvas id="canvas" width="400" height="500">
+
+</canvas>
+<div id="missCounter"></div>
+</div>
+<div id="gameOver" style="display: none;">
+<h2>Game Over!</h2>
+<p>Save your melody? Click <a id="exportMelody">here.</a></p>
+
+<p>Click <a href="">here</a> to try again.</p>
+</div>
+</body>
+</html>
