@@ -3,16 +3,20 @@ import tornado.web
 import tornado.auth
 from tornado.options import define, options
 import os,sys
+import logging
 import simplejson
 import hashlib
 import re
 import logging
+import urllib2
+import json
 from pprint import pprint
 sys.path = [os.getcwd()] + sys.path
 from models import User
 from couchdb import Server, ResourceNotFound
 from collections import defaultdict
 from datetime import datetime, timedelta
+from pprint import pprint
 
 class SplashHandler(tornado.web.RequestHandler):
 	@tornado.web.asynchronous
@@ -21,24 +25,29 @@ class SplashHandler(tornado.web.RequestHandler):
 		self.render("templates/splash.html")
 
 class GameHandler(tornado.web.RequestHandler):
-        @tornado.web.asynchronous
-        def get(self):
-		# Check if user is either null or not a key
-		if self.session.get('user'):
-			user = self.session['user']
-		else:
-			self.redirect("/auth/facebook/")
-			return
-		melodies = user.getMelodies()
-		self.render("templates/game.html",media_url=self.settings["media_url"])
-		return			
+		@tornado.web.asynchronous
+		def get(self):
+			# Check if user is either null or not a key
+			if self.session.get('user'):
+				user = self.session['user']
+			else:
+				self.redirect("/auth/facebook/")
+				return
+			melodies = user.getMelodies()
+			melodies_json = []
+			if melodies != None:
+				for melody in melodies:
+					mel_string = json.dumps(melody)
+					melodies_json.append(mel_string)
+			self.render("templates/game.html",media_url=self.settings["media_url"], melodies=melodies_json)
+			return			
 
 class ScoreSaveHandler(tornado.web.RequestHandler):
-        @tornado.web.asynchronous
-        def get(self, score):  
-                resp = {}
-                self.write(resp)
-                self.finish()
+	@tornado.web.asynchronous
+	def get(self, score):  
+			resp = {}
+			self.write(resp)
+			self.finish()
 	# code for score save to DB for user here
 	def post(self, score):
 		response = {'status': 'failed'}
@@ -61,30 +70,88 @@ class ScoreSaveHandler(tornado.web.RequestHandler):
 		self.finish()
 
 class MelodySaveHandler(tornado.web.RequestHandler):
-        @tornado.web.asynchronous
-        def get(self, melody):  
-                resp = {}
-                self.write(resp)
-                self.finish()
+	@tornado.web.asynchronous
 	# code for melody save to DB for user here
 	def post(self):
 		response = {'status': 'failed'}
-		try: 
+		try:
 			user = self.session['user']
-			melody = self.get_argument('melody')
+		except KeyError:
+			response['status'] = 'login'
+			self.session.invalidate()
+			self.write(response)
+			self.finish()
+			return
+		try: 
+			body = self.request.body
+			body_decoded = urllib2.unquote(body)
+			logging.debug("Body:" + body_decoded)
+			param_list = body_decoded.split('&')
+			melody = []
+			cur_freq = None
+			cur_dur = None
+			freq_lock = False
+			dur_lock = False
+			
+			# Sometimes, AJAX sucks and you have to write JSON parsers
+			# manually. I suppose I could use XML here, but, for
+			# consistency, I decided not to
+			
+			for param in param_list:
+				# Get the key / value pairs
+				key_str = param.partition('=')[0]
+				val = param.partition('=')[2]
+				if key_str.find('[freq]') != -1 and freq_lock == False:
+					key = "freq"
+					freq_lock = True
+					cur_freq = val
+				elif key_str.find('[dur]') != -1 and dur_lock == False:
+					key = "dur"
+					dur_lock = True
+					cur_dur = val
+				elif freq_lock and dur_lock:
+					melody.append({'freq': str(cur_freq), 'dur':str(cur_dur)})
+					cur_freq = None
+					cur_dur = None
+					freq_lock = False
+					dur_lock = False
+				else:
+					response['status'] = "failed: Frequency or duration missing from query string or out of order"
+					self.write(response)
+					self.finish()
+					return
+
+			pprint(melody)				
 			if not isinstance(melody, list):	
+				response['status'] = "failed: Not a list. Recieved: " + melody
 				self.write(response)
 				self.finish()
+				return
 			for item in melody:
-				if not item['freq'].isdigit():
-						self.write(response)
-						self.finish()
-				if not item['dur'].isdigit():
-						self.write(response)
-						self.finish()
+				try:
+					float(item['freq'])
+				except ValueError:
+					response['status'] = "failed: Frequency not a number"
+					self.write(response)
+					self.finish()
+					return
+				try:
+					float(item['dur'])
+				except ValueError:
+					response['status'] = "failed: Duration not a number"
+					self.write(response)
+					self.finish()
+					return
 		except KeyError:
 				self.write(response)
 				self.finish()
+				return
+		if not user.getUserID():
+			response['status'] = 'login'
+			self.session.invalidate()
+			self.write(response)
+			self.finish()
+			return
 		user.saveMelody(melody)
 		response['status'] = 'succeeded'
 		self.write(response)
@@ -116,11 +183,11 @@ class FacebookHandler(tornado.web.RequestHandler, tornado.auth.FacebookGraphMixi
 		return	
 
 class HighScoreLookup(tornado.web.RequestHandler):
-        @tornado.web.asynchronous
-        def get(self):
-                resp = {}
-                self.write(resp)
-                self.finish()
+	@tornado.web.asynchronous
+	def get(self):
+			resp = {}
+			self.write(resp)
+			self.finish()
 	def post(self):
 		# output user's top 10 high scores
 		response = {'status': 'failed'}

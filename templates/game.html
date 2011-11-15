@@ -16,7 +16,26 @@
 
 */
 
+function startGame(accomp){
+	$.modal.close();
+	var sound = soundGame({'VCOs': 2, 'sampleRate': 44100, 'accomp':accomp });
+	sound.play();
+	var game = gameEngine({'canvas': document.getElementById('canvas'), 'audio': sound, 'media': '{{media_url}}' });
+	game.init();
+	$("#exportMelody").bind('click', function(){
+		console.log(sound.getNotes());
+		var melody_obj = {
+			'melody': sound.getNotes()
+		}
+		$.post("/savemelody/", $.param(melody_obj), function(data){
+			var json_data = $.parseJSON(data);
+			if (json_data.status != 'succeeded'){
+				alert(":( WE BROKE SOMETHING SORRY.");
+			}
+		});
+	});
 
+}
 
 $(document).ready(function(){
 	/*
@@ -70,24 +89,66 @@ $(document).ready(function(){
 			'dur': (1/2)
 		}
 	]; */
-	var accomp = [];
-	var sound = soundGame({'VCOs': 2, 'sampleRate': 44100, 'accomp':accomp });
-	sound.play();
-	var game = gameEngine({'canvas': document.getElementById('canvas'), 'audio': sound, 'media': '{{media_url}}' });
-	game.init();
+	$("#melody_pick").modal();
+	$("#noMel").bind('click', function(){
+		var accomp = [];
+		startGame(accomp);
+	});
+	$(".melPlay").bind("click", function(){
+		var id = $(this).parent("li").attr('id').replace('mel','');
+		var accomp = $.parseJSON($("#melodyJSON" + id).val());
+		console.log(accomp);
+		var sound = soundGame({'VCOs': 1, 'sampleRate':44100,'accomp':accomp });
+		sound.play();
+		$(this).html("Pause");
+		$(this).addClass("playing");
+		$(this).unbind("click");
+		$(this).bind('click', function(){
+			if ($(this).hasClass('playing')){
+				$(this).removeClass('playing');
+				sound.pause();
+				$(this).html("Play");
+			}
+			else {
+				$(this).addClass("playing");
+				sound.resume();
+				$(this).html("Pause");
+			}
+		});
+	});
+	$(".melSelect").bind("click", function(){
+		var id = $(this).parent("li").attr('id').replace('mel','');
+		var accomp = $.parseJSON($("#melodyJSON" + id).val());
+		startGame(accomp);
+	});
+
+	
 });
+
+
 
 </script>
 
 </head>
 <body>
 <div id="maindiv">
+<div id="melody_pick" class="modal">
+	<ul>
+	{% for i in xrange(len(melodies)) %}
+		<li id="mel{{i}}" class="melody">
+			<a class="melPlay">Play</a><a class="melSelect">Use</a>
+			<input type="hidden" value='{{melodies[i]}}' class="melJSON" id="melodyJSON{{i}}"/>
+		</li>
+	{% end %}
+	</ul>
+	<a id="noMel">No melody.</a>
+</div>
 <canvas id="canvas" width="400" height="500">
 
 </canvas>
 <div id="missCounter"></div>
 </div>
-<div id="gameOver" style="display: none;">
+<div id="gameOver" class="modal">
 <h2>Game Over!</h2>
 <p>Save your melody? Click <a id="exportMelody">here.</a></p>
 
