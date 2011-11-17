@@ -22,7 +22,7 @@ class SplashHandler(tornado.web.RequestHandler):
 	@tornado.web.asynchronous
 	def get(self):
 		self.session.invalidate()
-		self.render("templates/splash.html")
+		self.render("templates/splash.html", media_url=self.settings["media_url"])
 
 class GameHandler(tornado.web.RequestHandler):
 		@tornado.web.asynchronous
@@ -35,7 +35,9 @@ class GameHandler(tornado.web.RequestHandler):
 				return
 			melodies = user.getMelodies()
 			melodies_json = []
-			if melodies != None:
+			if melodies:
+				melodies.reverse()
+				melodies = melodies[:4]
 				for melody in melodies:
 					mel_string = json.dumps(melody)
 					melodies_json.append(mel_string)
@@ -49,22 +51,22 @@ class ScoreSaveHandler(tornado.web.RequestHandler):
 			self.write(resp)
 			self.finish()
 	# code for score save to DB for user here
-	def post(self, score):
-		response = {'status': 'failed'}
+	def post(self):
 		try:
 			user = self.session['user']
-			scores = self.get_argument('scores')
-			if not isinstance(scores, list):
-				self.write(response)
-				self.finish()
-			for item in scores:
-				if not item.isdigit():
-					self.write(response)
-					self.finish()
 		except KeyError:
+			response['status'] = 'login'
+			self.session.invalidate()
 			self.write(response)
 			self.finish()
-		user.saveScore(score)	
+			return
+		score = int(self.get_argument('score'))
+		response = {'status': 'failed'}
+		try:
+			user.saveScore(score)
+		except:
+			self.write(response)
+			self.finish()
 		response['status'] = 'succeeded'
 		self.write(response)
 		self.finish()
@@ -193,17 +195,15 @@ class HighScoreLookup(tornado.web.RequestHandler):
 		response = {'status': 'failed'}
 		try:
 			user = self.session['user']
-			scores = self.get_argument('scores')
-			if not isinstance(scores, list):
-				self.write(response)
-				self.finish()
-			for item in scores:
-				if not item.isdigit():
-					self.write(response)
-					self.finish()
-			highscores = scores.sort()
-			render('highscores.html')
-			return highscores[:9:]
+		except KeyError:
+			response['status'] = 'login'
+			self.session.invalidate()
+			self.write(response)
+			self.finish()
+			return
+		try:
+			self.write({'status': 'succeeded', 'data':user.getHighScores()})
+			self.finish()
 		except KeyError:
 			self.write(response)
 			self.finish()

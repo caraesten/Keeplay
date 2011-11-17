@@ -1,7 +1,7 @@
 from couchdb import Server, ResourceNotFound
 from uuid import uuid4
 from pprint import pprint
-
+from datetime import datetime
 import simplejson
 
 server = Server()
@@ -32,8 +32,14 @@ class User:
 		
 	def saveScore(self, score):
 		userdb = server[self.dbname]
-		scores.append(score)
-		userdb[self.userid]['scores'] = scores	
+		user = userdb[self.userid]
+		if self.scores:
+			self.scores.append({'score':score, 'time':datetime.now().strftime('%m/%d/%y')})
+		else:
+			self.scores = [{'score':score, 'time':datetime.now().strftime('%m/%d/%y')}]
+		
+		user['scores'] = self.scores
+		userdb.save(user)
 
 	def setInitials(self, itls):
 		userdb = server[self.dbname]
@@ -62,6 +68,10 @@ class User:
 	def getInitials(self):
 		return self.initials
 
-	def getScores():
+	def getScores(self):
 		userdb = server[self.dbname]
 		return userdb[self.userid]['scores']	
+
+	def getHighScores(self):
+		hs = sorted(self.scores, reverse=True)
+		return hs[:3]
