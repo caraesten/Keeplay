@@ -1,0 +1,147 @@
+*{
+	margin: 0;
+	padding: 0;
+}
+body {
+	background-color: #e5e5e5;
+	font-family: ArcadeInterlacedRegular;
+	text-align: center;
+}
+#sliderarea {
+	width: 200px;
+	margin-left: auto;
+	margin-right: auto;
+	min-height: 50px;
+	padding-top: 10px;
+	
+}
+.ui-slider-horizontal
+{
+	width: 200px;
+	height: 4px;
+	background-color: #000;
+}
+.ui-slider .ui-slider-handle
+{
+	width: 10px;
+	height:10px;
+	margin-top: -5px;
+	left: 0;
+	background-color: #2B3990;
+	border: 3px solid #000;
+	position: relative;
+	float: left;
+}
+#keydisplay {
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border-radius: 10px;
+	margin-top: 10px;
+	width: 100px;
+	padding: 5px;
+	margin-left: auto;
+	margin-right: auto;
+	font-size: 20px;
+	background-color: #85AB8F;
+	border: 3px solid #a5a5a5;
+	margin-bottom: 10px;
+}
+.main {
+	width: 100%;
+	height: 100%;
+	background-color: #e5e5e5;
+}
+
+a {
+	text-decoration: underline;
+	color: #3030ff;
+}
+
+.container {
+	background-color: #EBF2CF;
+	border: 1px solid #858585;
+	border-top: 0;
+	height: 100%;
+	width: 640px;
+	margin-left: auto;
+	margin-right: auto;
+}
+.centered {
+	width: 250px;
+
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.aside {
+	font-size: 12px;
+}
+
+#logo {
+}
+
+#preload {
+	display: none;
+}
+#maindiv {
+	width: 402px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#startbutton {
+	background-image: url('../img/startbutton.png');
+	font-size: 20px;
+	padding: 10px;
+	padding-top: 23px;
+	width: 140px;
+	height: 36px;
+	margin-top: 30px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 20px;
+	text-align: center;
+}
+
+#startbutton a{
+	color: #000;
+	text-decoration: none;
+}
+
+#canvas {
+	width: 400px;
+	height: 500px;
+	margin-left: auto;
+	margin-right: auto;
+}
+.modal {
+	padding: 20px;
+	border: 2px solid #000;
+	display: none;
+	min-width: 300px;
+	min-height: 200px;
+	background-color: #EBF2CF;
+	text-align: center;
+	cursor: default;
+}
+.modal a {
+	color: #2B3990;
+	text-decoration: none;
+}
+#gameOver {
+	line-height: 150%;
+}
+#highScores ul{
+	list-style: none;
+	font-size: 26px;
+	color: #ff3333;
+	margin-top: 10px;
+}
+
+#melody_pick ul {
+	list-style: none;
+}
+#melody_pick ul li {
+	margin: 15px;
+	text-align: center;
+}

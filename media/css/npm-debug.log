@@ -1,0 +1,34 @@
+info it worked if it ends with ok
+verbose cli [ 'node', '/usr/local/bin/npm', 'install', 'less' ]
+info using npm@1.0.106
+info using node@v0.5.0-pre
+verbose config file /home/estenh/.npmrc
+verbose config file /usr/local/etc/npmrc
+verbose config file /usr/local/lib/node_modules/npm/npmrc
+verbose into /opt/apps/keeplay/media/css [ 'less' ]
+verbose cache add less
+verbose cache add [ 'less', null ]
+silly cache add: name, spec, args [ undefined, 'less', [ 'less', null ] ]
+verbose parsed url { pathname: 'less', href: 'less' }
+info addNamed [ 'less', '' ]
+verbose addNamed [ null, '' ]
+verbose GET less
+verbose raw, before any munging less
+verbose url resolving [ 'https://registry.npmjs.org/', './less' ]
+verbose url resolved https://registry.npmjs.org/less
+ERR! Error: socket hang up
+ERR!     at CleartextStream.<anonymous> (http.js:1266:45)
+ERR!     at CleartextStream.emit (events.js:61:17)
+ERR!     at Array.1 (tls.js:607:22)
+ERR!     at EventEmitter._tickCallback (node.js:126:26)
+ERR! Report this *entire* log at:
+ERR!     <http://github.com/isaacs/npm/issues>
+ERR! or email it to:
+ERR!     <npm-@googlegroups.com>
+ERR! 
+ERR! System Linux 2.6.39.1-linode34
+ERR! command "node" "/usr/local/bin/npm" "install" "less"
+ERR! cwd /opt/apps/keeplay/media/css
+ERR! node -v v0.5.0-pre
+ERR! npm -v 1.0.106
+verbose exit [ 1, true ]
