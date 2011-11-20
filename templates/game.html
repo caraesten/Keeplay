@@ -23,7 +23,7 @@
 function startGame(accomp){
 	$.modal.close();
 	var key = $("#keyslider").slider("value");
-	var sound = soundGame({'VCOs': 2, 'sampleRate': 44100, 'accomp':accomp});
+	var sound = soundGame({'VCOs': 2, 'sampleRate': 44100, 'accomp':accomp, 'playMode':'inGame'});
 	sound.play();
 	var game = gameEngine({'canvas': document.getElementById('canvas'), 'audio': sound, 'media': '{{media_url}}', 'key':key });
 	game.init();
@@ -116,7 +116,7 @@ $(document).ready(function(){
 			prevSound.resume();
 		}
 		else {
-			prevSound = soundGame({'VCOs': 1, 'sampleRate':44100,'accomp':accomp });
+			prevSound = soundGame({'VCOs': 1, 'sampleRate':44100,'accomp':accomp, 'playMode':"preview" });
 			prevSound.play();
 		}
 		$(".melPlay").removeClass("playing");
@@ -154,6 +154,11 @@ $(document).ready(function(){
 	$(".melSelect").bind("click", function(){
 		var id = $(this).parent("li").attr('id').replace('mel','');
 		var accomp = $.parseJSON($("#melodyJSON" + id).val());
+		if (prevSound){
+			prevSound.pause();
+			prevSound.replaceAccomp([]);
+			prevSound = null;
+		}
 		startGame(accomp);
 	});
 
