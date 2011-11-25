@@ -1,7 +1,18 @@
+/*
+	Spec must include:
+		canvas (the canvas element)
+		media (the media url)
+		audio (the audio object)
+		musician (boolean for musician mode)
+		key (the root note, 0 as C)
+		
+
+*/
+
 var gameEngine = function(spec){
 
 	var		that = {}, canv = spec.canvas, media = spec.media,
-			audio = spec.audio,fps = 60, fpb = 0, misses = 0,
+			audio = spec.audio,fps = 60, fpb = 0, misses = 0, musician = spec.musician,
 			interval = null, blocks = [], cur_frame=0, root = spec.key - 9,
 			mouse_x = 0, mouse_y = 0, u_player = player({'x':150, 'y': canv.height - 30});
 	
@@ -105,10 +116,10 @@ var gameEngine = function(spec){
 			var keyPos = Math.floor(Math.random() * key.length);
 			var outKeyPos = Math.floor(Math.random() * outKey.length);
 			if (Math.floor(Math.random() * 5) == 1){
-				blocks.push(block({'freq': outKey[outKeyPos].freq, 'note':outKey[outKeyPos].name, 'points': -100, 'speed': 3, 'x': Math.floor(Math.random() * 401), 'w': 50, 'h': 5, 'inKey': false,'media':media}));
+				blocks.push(block({'freq': outKey[outKeyPos].freq, 'note':outKey[outKeyPos].name, 'points': -100, 'speed': 3, 'x': Math.floor(Math.random() * 401), 'w': 50, 'h': 5, 'inKey': false,'media':media, 'musician': musician}));
 			}
 			else {
-				blocks.push(block({'freq': key[keyPos].freq, 'note':key[keyPos].name, 'points': 100, 'speed': 3, 'x': Math.floor(Math.random() * 401), 'w': 50, 'h': 5, 'inKey': true, 'media':media}));
+				blocks.push(block({'freq': key[keyPos].freq, 'note':key[keyPos].name, 'points': 100, 'speed': 3, 'x': Math.floor(Math.random() * 401), 'w': 50, 'h': 5, 'inKey': true, 'media':media, 'musician': musician}));
 			}
 			cur_frame = 0;
 		}
@@ -151,7 +162,11 @@ var gameEngine = function(spec){
 				else {
 					var scoreEl = document.getElementById("score");
 					var score = parseInt(scoreEl.innerHTML);
-					score += 200;
+					var bonus = 1;
+					if (musician === true){
+						bonus = 5;
+					}
+					score += 200 * bonus;
 					scoreEl.innerHTML = score;
 				}
 

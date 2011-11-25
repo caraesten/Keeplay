@@ -5,6 +5,7 @@ var block = function(spec){
 	var note = spec.note;
 	var inKey = spec.inKey;
 	var media = spec.media;
+	var musician = spec.musician;
 	var x = spec.x;
 	var y = 0;
 	var w = spec.w;
@@ -13,15 +14,15 @@ var block = function(spec){
 	
 	that.draw = function (ctx){
 		var img = null;
-		if (inKey == true){
-			img = document.getElementById("block");
+		if (inKey == false && musician == false){
+			img = document.getElementById("badblock");
 		}
 		else {
-			img = document.getElementById("badblock");
+			img = document.getElementById("block");
 		}
 		ctx.drawImage (img,0,0);
 		ctx.font = "16px ArcadeInterlacedRegular";
-		ctx.fillText(note, (w/2)-9, -5);
+		ctx.fillText(note, 0, -5);
 	}
 	that.update = function (){
 		y += speed;

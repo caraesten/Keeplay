@@ -21,11 +21,16 @@
 */
 
 function startGame(accomp){
-	$.modal.close();
 	var key = $("#keyslider").slider("value");
+	var musician = false;
+	if ($("#musicianmode").html() === "ON"){
+		musician = true;
+	}
+	console.log("Musician: " + musician);
+	$.modal.close();
 	var sound = soundGame({'VCOs': 2, 'sampleRate': 44100, 'accomp':accomp, 'playMode':'inGame'});
 	sound.play();
-	var game = gameEngine({'canvas': document.getElementById('canvas'), 'audio': sound, 'media': '{{media_url}}', 'key':key });
+	var game = gameEngine({'canvas': document.getElementById('canvas'), 'audio': sound, 'media': '{{media_url}}', 'key':key, 'musician': musician });
 	game.init();
 	$("#exportMelody").live('click', function(){
 		var melody_obj = {
@@ -51,6 +56,15 @@ function startGame(accomp){
 }
 
 $(document).ready(function(){
+	
+	$("#musicianmode").bind("click", function(){
+		if ($(this).html() === "OFF"){
+			$(this).html("ON");
+		}
+		else {
+			$(this).html("OFF");
+		}
+	});
 
 	$(".loginPopup").live("click", function(){
 		newwindow = window.open('/auth/facebook/','Login','height=500,width=650');
@@ -179,6 +193,10 @@ $(document).ready(function(){
 		<div id="keyslider"></div>
 		<div id="keydisplay">C</div>
 	</div>
+	<br />
+	<p>Musician mode:</p>
+	<div id="musicianmode">OFF</div>
+	<br />
 	<p>Play with a melody!</p>
 	<ul>
 	{% for i in xrange(len(melodies)) %}
