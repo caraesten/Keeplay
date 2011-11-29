@@ -24,6 +24,12 @@ class SplashHandler(tornado.web.RequestHandler):
 		self.session.invalidate()
 		self.render("templates/splash.html", media_url=self.settings["media_url"])
 
+class InstructionsHandler(tornado.web.RequestHandler):
+	@tornado.web.asynchronous
+	def get(self):
+		self.render("templates/instructions.html", media_url=self.settings["media_url"])
+
+
 class GameHandler(tornado.web.RequestHandler):
 		@tornado.web.asynchronous
 		def get(self):

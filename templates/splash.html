@@ -1,5 +1,8 @@
+<!DOCTYPE html>
 <html>
 <head>
+<title>Keeplay</title>
+
 <link rel="stylesheet" type="text/css" href="{{ media_url }}css/game.css" />
 <link rel="stylesheet" type="text/css" href="{{ media_url }}css/arcadeI_webfont/stylesheet.css" />
 
@@ -9,9 +12,11 @@
 	<div class="main">
 		<div class="container">
 				<div class="main-ctrls">
-					<div id="logo" class="centered"><img src="{{ media_url }}img/logo.png"/></div>
-					<p>Catch the notes that are in-key. Avoid the ones that aren't.</p>
-					<div id="startbutton"><a href="/initgame">Start</a></div>
+					<div id="logo"><img src="{{ media_url }}img/logo.png"/></div>
+					<div id="start"><a href="/initgame"><img src="{{ media_url }}img/startbutton.png"/></a></div>
+					<div id="notes"><img src="{{ media_url }}img/notes.png"/></div>
+					<div id="instructions"><a href="/instructions"><img src="{{ media_url }}img/instructions.png" style="height: 10%;"/></a></div>
+					<br><br>
 					<p class="aside">(Keeplay uses Facebook auth to save your score)</p>
 				</div>
 		</div>

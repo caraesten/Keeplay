@@ -1,7 +1,8 @@
+<!DOCTYPE html>
 <html>
 
 <head>
-
+<title>Keeplay</title>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js" type="text/javascript"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js" type="text/javascript"></script>
 <link rel="stylesheet" type="text/css" href="{{ media_url }}css/arcadeI_webfont/stylesheet.css" />
@@ -13,170 +14,15 @@
 <script type="text/javascript" src="{{ media_url }}js/falling_block.js"> </script>
 <script type="text/javascript" src="{{ media_url }}js/player.js"> </script>
 <script type="text/javascript" src="{{ media_url }}js/game_engine.js"> </script>
+<script type="text/javascript" src="{{ media_url }}js/game_init.js"> </script>
 
 <script type="text/javascript">
-/*
-	Icon set from: http://somerandomdude.com/work/iconic/
 
-*/
 
-function startGame(accomp){
-	var key = $("#keyslider").slider("value");
-	var musician = false;
-	if ($("#musicianmode").html() === "ON"){
-		musician = true;
-	}
-	console.log("Musician: " + musician);
-	$.modal.close();
-	var sound = soundGame({'VCOs': 2, 'sampleRate': 44100, 'accomp':accomp, 'playMode':'inGame'});
-	sound.play();
-	var game = gameEngine({'canvas': document.getElementById('canvas'), 'audio': sound, 'media': '{{media_url}}', 'key':key, 'musician': musician });
-	game.init();
-	$("#exportMelody").live('click', function(){
-		var melody_obj = {
-			'melody': sound.getNotes()
-		}
-		$.ajax({
-			type: 'POST',
-			url: "/savemelody/",
-			data: $.param(melody_obj), 
-			success: function(data){
-				var json_data = data;
-				if (json_data.status == "succeeded"){
-					$("#saveMel").html("Thanks!");
-				}
-				else if (json_data.status == "login"){
-					$("#saveMel").html("Your session has expired! Click <a class='loginPopup'>here</a> to login and <a id='exportMelody'>to save your melody</a>");
-				}
-			},
-			dataType: 'JSON'
-		});
-	});
 
-}
-
-$(document).ready(function(){
-	
-	$("#musicianmode").bind("click", function(){
-		if ($(this).html() === "OFF"){
-			$(this).html("ON");
-		}
-		else {
-			$(this).html("OFF");
-		}
-	});
-
-	$(".loginPopup").live("click", function(){
-		newwindow = window.open('/auth/facebook/?fbwindow=yes','Login','height=500,width=650');
-	});
-	$("#saveScore").live("click", function(){
-		$("/savescore", {'score': parseInt(document.getElementById("score").innerHTML)}, function(response){
-			var resp_parse = $.parseJSON(response);
-			if (resp_parse.status === 'login'){
-				var alertElem = document.getElementById('loginAlert');
-				alertElem.innerHTML = "Your session expired! Click <a class='loginPopup'>here</a> to login and <a id='saveScore'>here</a> to save your score.";
-			}
-			else if (resp_parse.status === 'succeeded'){
-				alertElem.innerHTML = "Thanks!";
-			}
-			else {
-				alert('Problem...');
-			}
-		});
-	});
-
-	$("#keyslider").slider({
-		min: 0,
-		max: 11,
-		slide: function(event, ui){
-			var allNotes = 	[
-								"C",
-								"C#/Db",
-								"D",
-								"D#/Eb",
-								"E",
-								"F",
-								"F#/Gb",
-								"G",
-								"G#/Ab",
-								"A",
-								"A#/Bb",
-								"B"
-							];
-			var element = document.getElementById("keydisplay");
-			element.innerHTML = allNotes[ui.value];
-		}
-		
-
-	});
-	
-	var currentID = null;
-	var prevSound = null;
-	$("#melody_pick").modal({
-		opacity:80,
-		overlayCss: {backgroundColor:"#000"}
-	});
-	$("#noMel").bind('click', function(){
-		var accomp = [];
-		startGame(accomp);
-	});
-	$(".melPlay").bind("click", function(){
-		var id = $(this).parent("li").attr('id').replace('mel','');
-		var accomp = $.parseJSON($("#melodyJSON" + id).val());
-		console.log(accomp);
-		if (prevSound){
-			prevSound.pause();
-			prevSound.replaceAccomp(accomp);
-			prevSound.resume();
-		}
-		else {
-			prevSound = soundGame({'VCOs': 1, 'sampleRate':44100,'accomp':accomp, 'playMode':"preview" });
-			prevSound.play();
-		}
-		$(".melPlay").removeClass("playing");
-		$(".melPlay").html("Play");
-		currentID = id;
-		$(this).html("Pause");
-		$(this).addClass("playing");
-		$(this).unbind("click");
-		$(this).bind('click', function(){
-			if ($(this).hasClass('playing')){
-				$(this).removeClass('playing');
-				prevSound.pause();
-				$(this).html("Play");
-			}
-			else {
-				if (prevSound){
-					prevSound.pause();
-				}
-				$(".melPlay").removeClass("playing");
-				$(".melPlay").html("Play");
-				if (currentID != id){
-					prevSound.pause();
-					prevSound.replaceAccomp(accomp);
-					prevSound.resume();
-					currentID = id;
-				}
-				else {
-					prevSound.resume();
-				}
-				$(this).addClass("playing");
-				$(this).html("Pause");
-			}
-		});
-	});
-	$(".melSelect").bind("click", function(){
-		var id = $(this).parent("li").attr('id').replace('mel','');
-		var accomp = $.parseJSON($("#melodyJSON" + id).val());
-		if (prevSound){
-			prevSound.pause();
-			prevSound.replaceAccomp([]);
-			prevSound = null;
-		}
-		startGame(accomp);
-	});
-
-	
+$(document).ready(function(){	
+	var game = gameInit({'media_url':'{{media_url}}'});
+	game.doInit();
 });
 
 
@@ -186,7 +32,7 @@ $(document).ready(function(){
 </head>
 <body>
 <div class="container">
-<div id="logo" class="centered"><img src="{{ media_url }}img/logo.png"/></div>
+<div id="logo"><img src="{{ media_url }}img/logo.png" style="height: 15%"/></div>
 <div id="melody_pick" class="modal">
 	<p>Pick a key!</p>
 	<div id="sliderarea">
@@ -214,8 +60,6 @@ $(document).ready(function(){
 <canvas id="canvas" width="400" height="500">
 
 </canvas>
-<div id="matchIndicator">
-</div>
 <div id="preload">
 	<img src="{{ media_url }}img/block.png" id="block" />
 	<img src="{{ media_url }}img/badblock.png" id="badblock" />
