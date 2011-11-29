@@ -52,6 +52,7 @@ class ScoreSaveHandler(tornado.web.RequestHandler):
 			self.finish()
 	# code for score save to DB for user here
 	def post(self):
+		response = {'status': 'failed'}
 		try:
 			user = self.session['user']
 		except KeyError:

@@ -100,17 +100,7 @@ var gameEngine = function(spec){
 		// Collision detection routine referenced this:
 		// http://www.gamedev.net/page/resources/_/technical/game-programming/collision-detection-r735
 		var userpos;
-		/*
-		if (mouse_x <= 0){
-			userpos = 0;
-		}
-		else if (mouse_x >= canv.width + $(canv).offset().left - (2*u_player.getW())){
-			userpos = canv.width + $(canv).offset().left - (2*u_player.getW());
-		}
-		else {*/
-			userpos = (mouse_x - 60) *1.5;
-			/*
-		}*/
+		userpos = (mouse_x - 60) *1.5;
 		u_player.setX(userpos);
 		if (cur_frame >= (fpb / 4)){
 			var keyPos = Math.floor(Math.random() * key.length);
@@ -212,6 +202,45 @@ var gameEngine = function(spec){
 		ctx.restore();
 	}
 	
+	function ajaxScoreSave(response){
+		var resp_parse = response;
+		if (resp_parse.status === 'login'){
+			var alertElem = document.getElementById('loginAlert');
+			alertElem.innerHTML = "Your session expired! Click <a class='loginPopup'>here</a> to login and <a id='saveScore'>here</a> to save your score.";
+		}
+		else if (resp_parse.status === 'succeeded'){
+			var alertElem = document.getElementById('loginAlert');
+			alertElem.innerHTML = "";
+			$.ajax({
+				type: 'POST',
+				url:'/data/scorelookup/',
+				success: function(data){
+					var resp_parse = data;
+					
+					if (resp_parse.status === 'login'){
+						var alertElem = document.getElementById('loginAlert');
+						alertElem.innerHTML = "Your session expired! But, your score has been saved. Play again to see your high scores.";
+					
+					}
+					else if (resp_parse.status === 'succeeded'){
+						var highScoreElem = document.getElementById('highScores');
+						var listString = "<ul>";
+						for (var x in resp_parse.data){
+							listString += "<li>"+resp_parse.data[x].score + " on " + resp_parse.data[x].time + "</li>";
+						}
+						listString += "</ul>";
+						highScoreElem.innerHTML = "Your best tries: " + listString;
+					}
+				},
+				dataType: 'JSON'
+			});
+		}
+		else {
+			// Error condition. This is not serious, so pass.
+		}
+	}
+	
+	
 	function endGame(){
 		clearInterval(interval);
 		blocks = [];
@@ -225,45 +254,23 @@ var gameEngine = function(spec){
 		});
 		document.body.style.cursor = 'default';
 		document.getElementById("finalScore").innerHTML = "Score: " + document.getElementById("score").innerHTML;
+		
+		// Just in case user needs to manually save score
+		// due to session invalidation.
+		$("#saveScore").live("click", function(){
+			$.ajax({
+				type: 'POST',
+				url: "/savescore", 
+				data: {'score': parseInt(document.getElementById("score").innerHTML)},
+				success: ajaxScoreSave,
+				dataType: 'JSON'
+			});
+		});
 		$.ajax({
 			type: 'POST',
 			url: "/savescore", 
 			data: {'score': parseInt(document.getElementById("score").innerHTML)},
-			success: function(response){
-				var resp_parse = response;
-				if (resp_parse.status === 'login'){
-					var alertElem = document.getElementById('loginAlert');
-					alertElem.innerHTML = "Your session expired! Click <a class='loginPopup'>here</a> to login and <a id='saveScore'>here</a> to save your score.";
-				}
-				else if (resp_parse.status === 'succeeded'){
-					$.ajax({
-						type: 'POST',
-						url:'/data/scorelookup/',
-						success: function(data){
-							var resp_parse = data;
-							console.log(resp_parse);
-							
-							if (resp_parse.status === 'login'){
-								var alertElem = document.getElementById('loginAlert');
-								alertElem.innerHTML = "Your session expired! Click <a class='loginPopup'>here</a> to login and <a id='saveScore'>here</a> to save your score.";
-							}
-							else if (resp_parse.status === 'succeeded'){
-								var highScoreElem = document.getElementById('highScores');
-								var listString = "<ul>";
-								for (var x in resp_parse.data){
-									listString += "<li>"+resp_parse.data[x].score + " on " + resp_parse.data[x].time + "</li>";
-								}
-								listString += "</ul>";
-								highScoreElem.innerHTML = "Your best tries: " + listString;
-							}
-						},
-						dataType: 'JSON'
-					});
-				}
-				else {
-					// Error condition. This is not serious, so pass.
-				}
-			},
+			success: ajaxScoreSave,
 			dataType: 'JSON'
 		});
 	}
