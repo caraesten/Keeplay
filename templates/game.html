@@ -67,7 +67,7 @@ $(document).ready(function(){
 	});
 
 	$(".loginPopup").live("click", function(){
-		newwindow = window.open('/auth/facebook/','Login','height=500,width=650');
+		newwindow = window.open('/auth/facebook/?fbwindow=yes','Login','height=500,width=650');
 	});
 	$("#saveScore").live("click", function(){
 		$("/savescore", {'score': parseInt(document.getElementById("score").innerHTML)}, function(response){

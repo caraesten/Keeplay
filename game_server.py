@@ -165,6 +165,9 @@ class MelodySaveHandler(tornado.web.RequestHandler):
 class FacebookHandler(tornado.web.RequestHandler, tornado.auth.FacebookGraphMixin):
 	@tornado.web.asynchronous
 	def get(self):
+		ex_qstring = ""
+		if self.get_argument('fbwindow', False):
+			self.session['fb_window'] = True
 		if self.get_argument("code", False):
 			self.get_authenticated_user(
 				redirect_uri = self.application.settings["base_url"] + 'auth/facebook/',
@@ -176,12 +179,22 @@ class FacebookHandler(tornado.web.RequestHandler, tornado.auth.FacebookGraphMixi
 			return 
 		self.authorize_redirect(redirect_uri=(self.application.settings["base_url"] + 'auth/facebook/'),
 										client_id=self.settings["facebook_api_key"],
-										extra_params={"scope": "read_stream,publish_stream,offline_access"})
+										extra_params={})
 
 	def _on_login(self, user):
-		active_user = User(user["id"])
-		self.session["user"] = active_user
-		self.redirect("/initgame")
+		if user:
+			active_user = User(user["id"])
+			self.session["user"] = active_user
+			if not self.session.get('fb_window', False):
+				self.redirect("/initgame")
+			else:
+				self.session['fb_window'] = False
+				self.render("templates/close.html",media_url=self.settings["media_url"], error=False)
+		else:
+			if not self.session.get('fb_window', False):
+				self.redirect('/')
+			else:
+				self.render("templates/close.html",media_url=self.settings["media_url"], error=True)
 		return	
 
 class HighScoreLookup(tornado.web.RequestHandler):

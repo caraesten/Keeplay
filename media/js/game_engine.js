@@ -108,7 +108,7 @@ var gameEngine = function(spec){
 			userpos = canv.width + $(canv).offset().left - (2*u_player.getW());
 		}
 		else {*/
-			userpos = mouse_x;
+			userpos = (mouse_x - 60) *1.5;
 			/*
 		}*/
 		u_player.setX(userpos);
