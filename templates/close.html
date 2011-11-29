@@ -1,0 +1,15 @@
+<html>
+<head>
+<script type="text/javascript">
+{% if error != True %}
+window.onload = function() {
+	window.close();
+};
+{% end %}
+</script>
+</head>
+<body>
+<h2>Facebook did not pass us your authentication</h2>
+<p>Please click the login link again, and click 'allow' in the Facebook dialog</p>
+</body>
+</html>
