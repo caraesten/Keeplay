@@ -152,9 +152,9 @@ class MelodySaveHandler(tornado.web.RequestHandler):
 					self.finish()
 					return
 		except KeyError:
-				self.write(response)
-				self.finish()
-				return
+			self.write(response)
+			self.finish()
+			return
 		if not user.getUserID():
 			response['status'] = 'login'
 			self.session.invalidate()
