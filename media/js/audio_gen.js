@@ -199,7 +199,7 @@ var soundGame = function(spec){
 		return spec.speed;
 	}
 	that.getNextFreq = function(){
-		if (typeof noteBuf2 != 'undefined' && noteBuf2.length != 0){
+		if (typeof noteBuf2 != 'undefined' && noteBuf2.length != 0 && noteCount2 < noteBuf2.length){
 			return noteBuf2[noteCount2].freq;
 		}
 		else {

@@ -190,9 +190,12 @@ var gameEngine = function(spec){
 			var indicator = document.getElementById('matchIndicator');
 			indicator.innerHTML = "";
 		}
+		if (audio.getNextFreq()){
+			var next = document.getElementById('nextNote');
+			next.innerHTML = "Next: X";
+		}
 		for (var k in key){
 			if (Math.floor(key[k].freq) == Math.floor(audio.getNextFreq())){
-				var next = document.getElementById('nextNote');
 				next.innerHTML = "Next: " + key[k].name;
 			}
 		}
