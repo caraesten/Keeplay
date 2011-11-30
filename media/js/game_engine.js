@@ -64,7 +64,6 @@ var gameEngine = function(spec){
 		}            
 	}
 
-	
 	function updateXY(e){
 
 		mouse_x = e.pageX - canv.width;
@@ -180,6 +179,12 @@ var gameEngine = function(spec){
 		else {
 			var indicator = document.getElementById('matchIndicator');
 			indicator.innerHTML = "";
+		}
+		for (var k in key){
+			if (Math.floor(key[k].freq) == Math.floor(audio.getNextFreq())){
+				var next = document.getElementById('nextNote');
+				next.innerHTML = "Next: " + key[k].name;
+			}
 		}
 	}
 	

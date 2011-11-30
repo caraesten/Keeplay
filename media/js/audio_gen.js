@@ -167,7 +167,7 @@ var soundGame = function(spec){
 	}
 	
 	that.getMatch = function(){
-			if ( Math.floor(VCOs[0].frequency) === Math.floor(VCOs2[0].frequency) && VCOs[0].frequency != 0){
+			if ((typeof noteBuf[noteCount - 1] != 'undefined' || noteCount == 0) && VCOs[0].frequency != 0 && Math.floor(VCOs[0].frequency) === Math.floor(VCOs2[0].frequency)){
 				console.log('match');
 				return true;
 			}
@@ -178,6 +178,14 @@ var soundGame = function(spec){
 
 	that.getSpeed = function(){
 		return spec.speed;
+	}
+	that.getNextFreq = function(){
+		if (typeof noteBuf2 != 'undefined' && noteBuf2.length != 0){
+			return noteBuf2[noteCount2].freq;
+		}
+		else {
+			return 0;
+		}
 	}
 	
 	that.addFreq = function(nfreq){
