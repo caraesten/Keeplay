@@ -178,7 +178,8 @@ var soundGame = function(spec){
 					currentPlay = key[k];
 				}
 				else if (note == "fifth"){
-					currentPlay = key[((k + 5) % key.length)];
+					currentPlay = key[(parseInt((k + 5)) % key.length)];
+					console.log("Fifth match. Original: " + key[k].name + "Fifthmod: " + currentPlay.name);
 				}
 				currentIndex = k;
 			}
