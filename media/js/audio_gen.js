@@ -166,14 +166,33 @@ var soundGame = function(spec){
 		paused = false;
 	}
 	
-	that.getMatch = function(){
-			if ((typeof noteBuf[noteCount - 1] != 'undefined' || noteCount == 0) && VCOs[0].frequency != 0 && Math.floor(VCOs[0].frequency) === Math.floor(VCOs2[0].frequency)){
-				console.log('match');
-				return true;
+	that.getMatch = function(note, key){
+		var currentPlay = {};
+		var currentIndex = -1;
+		var accompPlay = {};
+		var accompIndex = -1;
+		// get note names and positions
+		for (var k in key){
+			if (Math.floor(key[k].freq) === Math.floor(VCOs[0].frequency)){
+				if (note == "root"){
+					currentPlay = key[k];
+				}
+				else if (note == "fifth"){
+					currentPlay = key[((k + 5) % key.length)];
+				}
+				currentIndex = k;
 			}
-			else {
-				return false;
+			if (Math.floor(key[k].freq) === Math.floor(VCOs2[0].frequency)){
+				accompPlay = key[k];
+				accompIndex = k;
 			}
+		}
+		if ((typeof noteBuf[noteCount - 1] != 'undefined' || noteCount == 0) && currentIndex != -1 && accompIndex != -1 && currentPlay.name === accompPlay.name){
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 	that.getSpeed = function(){

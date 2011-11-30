@@ -168,12 +168,22 @@ var gameEngine = function(spec){
 				}
 			}
 		}
-		if (audio.getMatch()){
+		
+		// Check for matches in the key. 1 = root, 5 = fifth
+		if (audio.getMatch("root", key)){
 			var indicator = document.getElementById('matchIndicator');
 			indicator.innerHTML = "Matched!";
 			var scoreEl = document.getElementById("score");
 			var score = parseInt(scoreEl.innerHTML);
 			score += 200;
+			scoreEl.innerHTML = score;
+		}
+		else if (audio.getMatch("fifth", key)){
+			var indicator = document.getElementById('matchIndicator');
+			indicator.innerHTML = "Fifth!";
+			var scoreEl = document.getElementById("score");
+			var score = parseInt(scoreEl.innerHTML);
+			score += 500;
 			scoreEl.innerHTML = score;
 		}
 		else {
