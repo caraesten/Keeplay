@@ -1,6 +1,16 @@
+/*
+	Spec must include:
+		-freq
+		-speed
+		-note
+		-inKey
+		-media
+		-musician
+
+*/
+
 var block = function(spec){
 	var freq = spec.freq;
-	var points = spec.points;
 	var speed = spec.speed;
 	var note = spec.note;
 	var inKey = spec.inKey;
@@ -24,8 +34,8 @@ var block = function(spec){
 		ctx.font = "16px ArcadeInterlacedRegular";
 		ctx.fillText(note, 0, -5);
 	}
-	that.update = function (){
-		y += speed;
+	that.update = function (score){
+		y += speed + 0.01 * y + (score / 30000);
 	}
 	that.setX = function(newX){
 		x = newX;
