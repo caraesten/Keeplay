@@ -27,6 +27,7 @@ class User:
 			self.initials = ""
 			self.scores = []
 			self.melodies = []
+			self.userid = userid
 			userdb[userid] = {'initials': self.initials, 'scores': self.scores, 'melodies': self.melodies}
 			
 		

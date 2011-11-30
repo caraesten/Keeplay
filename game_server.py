@@ -189,7 +189,7 @@ class FacebookHandler(tornado.web.RequestHandler, tornado.auth.FacebookGraphMixi
 										extra_params={})
 
 	def _on_login(self, user):
-		if user:
+		if user["id"]:
 			active_user = User(user["id"])
 			self.session["user"] = active_user
 			if not self.session.get('fb_window', False):
