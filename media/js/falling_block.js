@@ -31,7 +31,7 @@ var block = function(spec){
 			img = document.getElementById("block");
 		}
 		ctx.drawImage (img,0,0);
-		ctx.font = "16px ArcadeInterlacedRegular";
+		ctx.font = "16px ArcadeNormalRegular";
 		ctx.fillText(note, 0, -5);
 	}
 	that.update = function (score){

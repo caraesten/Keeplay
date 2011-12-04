@@ -4,7 +4,7 @@
 }
 body {
 	background-color: #e5e5e5;
-	font-family: ArcadeInterlacedRegular;
+	font-family: ArcadeNormalRegular;
 	text-align: center;
 }
 #sliderarea {
@@ -100,6 +100,10 @@ a {
 #instructions {
 	margin-top: 30px;
 }
+#instructions img {
+	width: 390px;
+	height: 96px;
+}
 
 #canvas {
 	width: 400px;
@@ -126,7 +130,7 @@ a {
 }
 #highScores ul{
 	list-style: none;
-	font-size: 26px;
+	font-size: 22px;
 	color: #ff3333;
 	margin-top: 10px;
 }
