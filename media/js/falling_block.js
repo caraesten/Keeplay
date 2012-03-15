@@ -35,7 +35,12 @@ var block = function(spec){
 		ctx.fillText(note, 0, -5);
 	}
 	that.update = function (score){
-		y += speed + 0.01 * y + (score / 30000);
+		if (score < 85000){
+			y += speed + 0.01 * y + (score / 13000);
+		}
+		else {
+			y += speed + 0.01 * y + 6.6;
+		}
 	}
 	that.setX = function(newX){
 		x = newX;

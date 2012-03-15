@@ -101,14 +101,14 @@ var gameEngine = function(spec){
 		var userpos;
 		userpos = (mouse_x - 60) *1.5;
 		u_player.setX(userpos);
-		if (cur_frame >= (fpb / 4)){
+		if (cur_frame >= (fpb / 2)){
 			var keyPos = Math.floor(Math.random() * key.length);
 			var outKeyPos = Math.floor(Math.random() * outKey.length);
 			if (Math.floor(Math.random() * 5) == 1){
-				blocks.push(block({'freq': outKey[outKeyPos].freq, 'note':outKey[outKeyPos].name, 'speed': 3, 'x': Math.floor(Math.random() * (401 - 50)), 'w': 50, 'h': 5, 'inKey': false,'media':media, 'musician': musician}));
+				blocks.push(block({'freq': outKey[outKeyPos].freq, 'note':outKey[outKeyPos].name, 'speed': 1, 'x': Math.floor(Math.random() * (401 - 50)), 'w': 50, 'h': 5, 'inKey': false,'media':media, 'musician': musician}));
 			}
 			else {
-				blocks.push(block({'freq': key[keyPos].freq, 'note':key[keyPos].name, 'speed': 3, 'x': Math.floor(Math.random() * (401 - 50)), 'w': 50, 'h': 5, 'inKey': true, 'media':media, 'musician': musician}));
+				blocks.push(block({'freq': key[keyPos].freq, 'note':key[keyPos].name, 'speed': 1, 'x': Math.floor(Math.random() * (401 - 50)), 'w': 50, 'h': 5, 'inKey': true, 'media':media, 'musician': musician}));
 			}
 			cur_frame = 0;
 		}

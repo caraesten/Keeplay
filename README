@@ -1,0 +1,5 @@
+Keeplay is a game designed to help with pitch recognition.
+
+It uses AudioLibJS for cross-browser Audio Data API compatibility.
+
+Sometimes, it's running here: http://keeplay.estenh.com/
